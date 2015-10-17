@@ -23,32 +23,22 @@ import time
 
 from pypetduino import Petduino
 
+# Petduino settings
+pet_port = "/dev/ttyUSB0"
+pet_baud_rate = 9600
+
 # Declare event handlers
-def onState(val):
-    print "Petduino state: ", val
-
 def onLed(val):
-    print "Petduino LED: ", val
-
-def onBtn1(val):
-    print "Petduino BTN1: ", val
-    if val:
-        pet.setState(1)
-
-def onBtn2(val):
-    print "Petduino BTN2: ", val
+    print "Petduino Led: ", val
 
 # Declare min process
 if __name__ == '__main__':
 
     # Open connection to petduino
-    pet =  Petduino("COM16", 9600)
+    pet =  Petduino(pet_port, pet_baud_rate)
 
     # Hookup event handlers
-    pet.onState(onState)
     pet.onLed(onLed)
-    pet.onBtn1(onBtn1)
-    pet.onBtn2(onBtn2)
 
     try:
         print 'Press Ctrl+C to exit...'

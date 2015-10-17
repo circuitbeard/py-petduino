@@ -31,9 +31,9 @@ pet_baud_rate = 9600
 
 # Pubnub settings
 pn_connected = False
-pn_channel = ""
-pn_publish_key = ""
-pn_subscribe_key = ""
+pn_channel = "petduino"
+pn_publish_key = "pub-c-2c6948aa-7450-4071-9cef-6836c9c28726"
+pn_subscribe_key = "sub-c-cdcf0ec2-710c-11e5-81f9-0619f8945a4f"
 
 # Declare event handlers
 def onState(val):
