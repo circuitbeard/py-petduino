@@ -19,12 +19,11 @@
 
 from threading import Thread
 
-class SerialMonitor(Thread):
+class CmdMessengerMonitor(Thread):
 
-    def __init__(self, serial_object, cmd_messenger):
-        super(SerialMonitor, self).__init__()
+    def __init__(self, cmd_messenger):
+        super(CmdMessengerMonitor, self).__init__()
         self.is_running = False
-        self.serial_object = serial_object
         self.cmd_messenger = cmd_messenger
 
     def stop(self):

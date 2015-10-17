@@ -17,7 +17,7 @@
 import serial
 
 from cmdmessenger import CmdMessenger
-from serialmonitor import SerialMonitor
+from cmdmessengermonitor import CmdMessengerMonitor
 
 class Petduino(object):
 
@@ -51,13 +51,13 @@ class Petduino(object):
         # attach callbacks
         self.cm.attach(self._onUnknownCommand)
 
-        # Start serial monitor
-        self.sm = SerialMonitor(self.ser, self.cm)
-        self.sm.start()
+        # Start monitoring
+        self.cmm = CmdMessengerMonitor(self.cm)
+        self.cmm.start()
 
     def close(self):
-        # Stop the serial monitor
-        self.sm.stop()
+        # Stop the monitoring
+        self.cmm.stop()
 
         # Close the command messenger connection
         self.cm.close()

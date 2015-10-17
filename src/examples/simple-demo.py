@@ -14,6 +14,11 @@
 # ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS  
 # SOFTWARE. 
 
+# Add parent directory to sys path to allow importing
+# modules from parent directory
+import os.path, sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+
 import time
 
 from pypetduino import Petduino
