@@ -37,7 +37,12 @@ byte waitAnimF[WAIT_ANIM_FRAMES][8]={
 };
 unsigned long waitAnimD[WAIT_ANIM_FRAMES] = { 1501, 1501 };
 
+byte errorIco[8]={0xc3,0xe7,0x7e,0x3c,0x3c,0x7e,0xe7,0xc3};
+
+char *icoData;
+
 #define WAIT_STATE 0
+#define DATA_STATE 1
 
 PetduinoSerial pet = PetduinoSerial();
 
@@ -45,6 +50,9 @@ void setup() {
 
   // Setup Petduino
   pet.begin(9600);
+  
+  // Hookup data callback
+  pet.setOnDataCallback(onData);
   
   // Draw the default img
   pet.setState(WAIT_STATE);
@@ -63,8 +71,29 @@ void loop() {
       pet.playAnimation(waitAnimF, waitAnimD, WAIT_ANIM_FRAMES, 3);
       pet.setNextState(WAIT_STATE, 9000); // Wait for connection
       break;
-  
+      
+    case DATA_STATE:
+      pet.stopAnimation();
+      pet.clearScreen();
+      
+      byte val[8];
+      if (strlen(icoData) == 16 && sscanf(icoData, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx", 
+           &val[0],&val[1],&val[2],&val[3],&val[4],&val[5],&val[6],&val[7],&val[8]) == 8)
+      {
+           pet.drawImage(val);
+      }
+      else
+      {
+          pet.drawImage(errorIco);
+      }
+      
+      pet.wait();
+      break;
   }
 
 }
 
+void onData(char *data) {
+  icoData = data;
+  pet.setState(DATA_STATE);
+}

@@ -1,5 +1,5 @@
 /*
- *    IconSerial.ino - Icon serial example the PetduinoSerial library
+ *    NumberSerial.ino - Number serial example the PetduinoSerial library
  *    Copyright (c) 2015 Circuitbeard
  *
  *    Permission is hereby granted, free of charge, to any person
@@ -37,7 +37,26 @@ byte waitAnimF[WAIT_ANIM_FRAMES][8]={
 };
 unsigned long waitAnimD[WAIT_ANIM_FRAMES] = { 1501, 1501 };
 
+#define NUMBER_COUNT 10
+byte numbers[NUMBER_COUNT][8] = {
+  { 0xE0, 0xA0, 0xA0, 0xA0, 0xA0, 0xA0, 0xA0, 0xE0 },
+  { 0x60, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 },
+  { 0xE0, 0x20, 0x20, 0xE0, 0x80, 0x80, 0x80, 0xE0 },
+  { 0xE0, 0x20, 0x20, 0xE0, 0x20, 0x20, 0x20, 0xE0 },
+  { 0xA0, 0xA0, 0xA0, 0xE0, 0x20, 0x20, 0x20, 0x20 },
+  { 0xE0, 0x80, 0x80, 0xE0, 0x20, 0x20, 0x20, 0xE0 },
+  { 0xE0, 0x80, 0x80, 0xE0, 0xA0, 0xA0, 0xA0, 0xE0 },
+  { 0xE0, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 },
+  { 0xE0, 0xA0, 0xA0, 0xE0, 0xA0, 0xA0, 0xA0, 0xE0 },
+  { 0xE0, 0xA0, 0xA0, 0xE0, 0x20, 0x20, 0x20, 0xE0 }
+};
+
+unsigned int num;
+unsigned int numOnes;
+unsigned int numTens;
+
 #define WAIT_STATE 0
+#define DATA_STATE 1
 
 PetduinoSerial pet = PetduinoSerial();
 
@@ -45,6 +64,9 @@ void setup() {
 
   // Setup Petduino
   pet.begin(9600);
+  
+  // Hookup data callback
+  pet.setOnDataCallback(onData);
   
   // Draw the default img
   pet.setState(WAIT_STATE);
@@ -63,8 +85,27 @@ void loop() {
       pet.playAnimation(waitAnimF, waitAnimD, WAIT_ANIM_FRAMES, 3);
       pet.setNextState(WAIT_STATE, 9000); // Wait for connection
       break;
-  
+      
+    case DATA_STATE:
+      pet.stopAnimation();
+      pet.clearScreen();
+      
+      // Split the number digits
+      numTens = num/10;
+      numOnes = num-numTens*10;
+    
+      // Generate & draw number graphic
+      for(int b = 0; b < 8; b++){
+        pet.drawRow(b, numbers[numTens][b] | numbers[numOnes][b] >> 4);
+      }
+      
+      pet.wait();
+      break;
   }
 
 }
 
+void onData(char *data) {
+  num = atoi(data);
+  pet.setState(DATA_STATE);
+}
