@@ -74,7 +74,6 @@ void loop() {
       
     case DATA_STATE:
       pet.stopAnimation();
-      pet.clearScreen();
       
       byte val[8];
       if (strlen(icoData) == 16 && sscanf(icoData, "%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx", 
